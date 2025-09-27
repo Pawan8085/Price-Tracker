@@ -1,6 +1,7 @@
 package com.app.transformer;
 
 import com.app.dto.request.UserRequest;
+import com.app.dto.response.UserResponse;
 import com.app.model.User;
 
 public class UserTransformer {
@@ -14,5 +15,14 @@ public class UserTransformer {
                 .password(userRequest.getPassword())
                 .build();
 
+    }
+
+
+    public static UserResponse userToUserResponse(User user){
+        // User to UserResponse
+        return UserResponse.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
     }
 }
