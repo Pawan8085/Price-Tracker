@@ -1,8 +1,10 @@
 package com.app.service;
 
+import com.app.dto.request.UserRequest;
+
 public interface UserService {
 
-    String registerUser();
+    String registerUser(UserRequest userRequest);
 
 
 }
