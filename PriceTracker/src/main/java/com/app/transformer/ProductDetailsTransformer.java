@@ -16,4 +16,16 @@ public class ProductDetailsTransformer {
                 .minPrice(productDetails.getMinPrice())
                 .build();
     }
+
+
+    public static ProductDetails productDetailsResponseToProductDetails(ProductDetailsResponse productDetailsResponse){
+        // ProductDetailsResponse to ProductDetails
+        return ProductDetails.builder()
+                .product(productDetailsResponse.getProduct())
+                .url(productDetailsResponse.getUrl())
+                .currentPrice(productDetailsResponse.getCurrentPrice())
+                .minPrice(productDetailsResponse.getMinPrice())
+                .maxPrice(productDetailsResponse.getMaxPrice())
+                .build();
+    }
 }

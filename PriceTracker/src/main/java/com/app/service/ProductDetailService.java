@@ -4,13 +4,14 @@ import com.app.dto.request.UrlReqeust;
 import com.app.dto.response.ApiResponse;
 import com.app.dto.response.PageInfoResponse;
 import com.app.dto.response.ProductDetailsResponse;
+import com.app.exception.ProductException;
 
 public interface ProductDetailService {
     /**
      *
      * @param urlReqeust
      */
-    void addProductDetails(UrlReqeust urlReqeust);
+    void addProductDetails(UrlReqeust urlReqeust)throws ProductException;
 
     /**
      *

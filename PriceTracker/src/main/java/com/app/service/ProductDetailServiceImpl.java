@@ -5,7 +5,9 @@ import com.app.dto.response.ApiResponse;
 import com.app.dto.response.PageInfoResponse;
 import com.app.dto.response.ProductDetailsResponse;
 import com.app.model.ProductDetails;
+import com.app.model.User;
 import com.app.repository.ProductDetailsRepo;
+import com.app.repository.UserRepo;
 import com.app.transformer.PageDetailsTransformer;
 import com.app.transformer.ProductDetailsTransformer;
 import org.jsoup.Jsoup;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,14 +28,32 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
 
 
     private final ProductDetailsRepo productDetailsRepo;
+    private final UserRepo userRepo;
 
     @Autowired
-    public ProductDetailServiceImpl(ProductDetailsRepo productDetailsRepo) {
+    public ProductDetailServiceImpl(ProductDetailsRepo productDetailsRepo, UserRepo userRepo) {
         this.productDetailsRepo = productDetailsRepo;
+        this.userRepo = userRepo;
     }
 
     @Override
     public void addProductDetails(UrlReqeust urlReqeust) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepo.findByEmail(username).get();
+
+        ProductDetailsResponse productDetailsResponse = getProductDetails(urlReqeust);
+        productDetailsResponse.setMaxPrice(productDetailsResponse.getCurrentPrice());
+        productDetailsResponse.setMinPrice(productDetailsResponse.getCurrentPrice());
+
+        ProductDetails productDetails = ProductDetailsTransformer.productDetailsResponseToProductDetails(productDetailsResponse);
+        user.getProductDetails().add(productDetails);
+        userRepo.save(user);
+
+
+    }
+
+    ProductDetailsResponse getProductDetails(UrlReqeust urlReqeust){
 
         try{
 
@@ -64,30 +85,30 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
 
             int productPrice = Integer.parseInt(priceStr.toString());
 
-            System.out.println(url.length());
 
-            ProductDetails productDetails = new ProductDetails();
-            productDetails.setProduct(title);
-            productDetails.setUrl(url);
-            productDetails.setCurrentPrice(productPrice);
-            productDetails.setMinPrice(productPrice);
-            productDetails.setMaxPrice(productPrice);
-
-            productDetailsRepo.save(productDetails);
+           return ProductDetailsResponse.builder()
+                    .product(title)
+                    .url(url)
+                    .currentPrice(productPrice)
+                    .build();
 
 
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
 
+
+
+    }
     @Override
     public ApiResponse<ProductDetailsResponse> findAllProductDetails(int page_no) {
 
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
         // create page object
         Pageable pageable = PageRequest.of(page_no, 10);
-        Page<ProductDetails> data = productDetailsRepo.findAll(pageable);
+        Page<ProductDetails> data = userRepo.findProductDetailsByEmail(username, pageable);
 
         ApiResponse<ProductDetailsResponse> response = new ApiResponse<>();
         List<ProductDetailsResponse> products = new ArrayList<>();

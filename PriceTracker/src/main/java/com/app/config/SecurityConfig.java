@@ -23,7 +23,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(request ->
                 request.requestMatchers("/user/register").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults());
+                .formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults());
 
 
         return http.build();
