@@ -8,6 +8,7 @@ import com.app.repository.ProductDetailsRepo;
 import com.app.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -32,56 +33,52 @@ public class NotificationService {
     @Value("${app.mail}")
     private String mail;
 
-//    @Scheduled(cron = "0 0/5 * * * *")
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(cron = "0 0/5 * * * *")
     public void sendNotification(){
 
+        List<User> userList = userRepo.findAll();
 
-       List<User> userList = userRepo.findAll();
+        for (User user : userList) {
+            processUserNotification(user); // async call
+        }
 
-       for(User user : userList){
+    }
 
-           for(ProductDetails product : user.getProductDetails()){
-               UrlReqeust urlReqeust = new UrlReqeust();
-               urlReqeust.setUrl(product.getUrl());
-               ProductDetailsResponse productDetail = productDetailService.getProductDetails(urlReqeust);
+    @Async
+    public void processUserNotification(User user) {
+        for (ProductDetails product : user.getProductDetails()) {
+            UrlReqeust urlReqeust = new UrlReqeust();
+            urlReqeust.setUrl(product.getUrl());
+            ProductDetailsResponse productDetail = productDetailService.getProductDetails(urlReqeust);
 
-               if(productDetail != null){
+            if (productDetail != null) {
+                Integer currentPrice = productDetail.getCurrentPrice();
+                Integer prevPrice = product.getCurrentPrice();
+                Integer prevMinPrice = product.getMinPrice();
+                Integer prevMaxPrice = product.getMaxPrice();
 
-                   Integer currentPrice = productDetail.getCurrentPrice();
-                   Integer prevPrice = product.getCurrentPrice();
-                   Integer prevMinPrice = product.getMinPrice();
-                   Integer prevMaxPrice = product.getMaxPrice();
+                product.setCurrentPrice(currentPrice);
 
-                   product.setCurrentPrice(currentPrice);
+                // send notification if price has dropped
+                if (currentPrice < prevPrice) {
+                    String message = product.getProduct() +
+                            " price has dropped from " + prevPrice + " to " + currentPrice;
+                    String subject = "Price Alert";
 
-                   if(currentPrice < prevPrice){
-                       // send notification to the user
-                       String message = product.getProduct()+" price has dropped by "+prevPrice+" to "+currentPrice;
-                       String subject = "Price Alert";
+                    try {
+                        emailService.send(user.getEmail(), mail, subject, message); // async
+                    } catch (Exception e) {
+                        System.err.println("Failed to send email: " + e.getMessage());
+                    }
+                }
 
-                       try {
-                           emailService.send(user.getEmail(), mail, subject, message);
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                       }
-                   }
+                // update min and max price
+                product.setMinPrice(Math.min(currentPrice, prevMinPrice));
+                product.setMaxPrice(Math.max(currentPrice, prevMaxPrice));
+            }
+        }
 
-                   product.setMinPrice(Math.min(currentPrice, prevMinPrice));
-                   product.setMaxPrice(Math.max(currentPrice, prevMaxPrice));
-
-
-               }
-
-
-
-           }
-
-           productRepo.saveAll(user.getProductDetails());
-
-       }
-
-
+        productRepo.saveAll(user.getProductDetails());
     }
 
 
