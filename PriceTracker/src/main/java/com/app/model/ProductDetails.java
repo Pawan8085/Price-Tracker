@@ -3,6 +3,8 @@ package com.app.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -18,5 +20,6 @@ public class ProductDetails {
     private Integer currentPrice;
     private Integer minPrice;
     private  Integer maxPrice;
+    private LocalDateTime priceDrop;
 
 }

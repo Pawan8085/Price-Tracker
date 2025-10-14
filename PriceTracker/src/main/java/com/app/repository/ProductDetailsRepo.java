@@ -11,4 +11,9 @@ public interface ProductDetailsRepo extends JpaRepository<ProductDetails, Long> 
 
     @Query("Select p FROM ProductDetails p WHERE p.product LIKE CONCAT('%', :query, '%')")
     Page<ProductDetails> findByProductName(@Param("query") String query, Pageable pageable);
+
+
+    @Query("SELECT p FROM ProductDetails p WHERE p.priceDrop IS NOT NULL ORDER BY p.priceDrop ASC")
+    Page<ProductDetails> findProductByPriceDrop(Pageable pageable);
+
 }

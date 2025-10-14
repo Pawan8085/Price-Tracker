@@ -1,6 +1,5 @@
 package com.app.service;
 
-
 import com.app.dto.request.UserRequest;
 import com.app.exception.UserException;
 import com.app.model.User;

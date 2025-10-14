@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -64,6 +65,7 @@ public class NotificationService {
                     String message = product.getProduct() +
                             " price has dropped from " + prevPrice + " to " + currentPrice;
                     String subject = "Price Alert";
+                    product.setPriceDrop(LocalDateTime.now());
 
                     try {
                         emailService.send(user.getEmail(), mail, subject, message); // async

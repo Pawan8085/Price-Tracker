@@ -14,6 +14,7 @@ public class ProductDetailsTransformer {
                 .currentPrice(productDetails.getCurrentPrice())
                 .maxPrice(productDetails.getMaxPrice())
                 .minPrice(productDetails.getMinPrice())
+                .price_drop(productDetails.getPriceDrop())
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class ProductDetailsTransformer {
                 .currentPrice(productDetailsResponse.getCurrentPrice())
                 .minPrice(productDetailsResponse.getMinPrice())
                 .maxPrice(productDetailsResponse.getMaxPrice())
+                .priceDrop(productDetailsResponse.getPrice_drop())
                 .build();
     }
 }

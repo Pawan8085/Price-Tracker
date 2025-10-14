@@ -2,6 +2,8 @@ package com.app.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -14,4 +16,5 @@ public class ProductDetailsResponse {
     private Integer currentPrice;
     private Integer minPrice;
     private  Integer maxPrice;
+    private LocalDateTime price_drop;
 }
