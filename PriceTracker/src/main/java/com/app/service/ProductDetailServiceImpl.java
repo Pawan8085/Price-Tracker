@@ -104,6 +104,7 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
     @Override
     public ApiResponse<ProductDetailsResponse> findAllProductDetails(int page_no) {
 
+        // get the username
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // create page object
@@ -131,6 +132,29 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
         // create page object
         Pageable pageable = PageRequest.of(page_no, 10);
         Page<ProductDetails> data = productDetailsRepo.findByProductName(key, pageable);
+
+        ApiResponse<ProductDetailsResponse> response = new ApiResponse<>();
+        List<ProductDetailsResponse> products = new ArrayList<>();
+
+        // convert entity to dto
+        for(ProductDetails productDetails : data.getContent()){
+            products.add(ProductDetailsTransformer.productDetailsToProductDetailsResponse(productDetails));
+        }
+
+        // set product & page information
+        response.setData(products);
+        PageInfoResponse pageInfoResponse = PageDetailsTransformer.pageToPageInfoResponse(data);
+        response.setPageInfo(pageInfoResponse);
+
+        return response;
+    }
+
+    @Override
+    public ApiResponse<ProductDetailsResponse> getPricedDroppedProduct(int page_no) {
+
+        // create page object
+        Pageable pageable = PageRequest.of(page_no, 10);
+        Page<ProductDetails> data = productDetailsRepo.findProductByPriceDrop(pageable);
 
         ApiResponse<ProductDetailsResponse> response = new ApiResponse<>();
         List<ProductDetailsResponse> products = new ArrayList<>();

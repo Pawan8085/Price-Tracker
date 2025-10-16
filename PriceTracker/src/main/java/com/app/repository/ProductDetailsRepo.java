@@ -13,7 +13,7 @@ public interface ProductDetailsRepo extends JpaRepository<ProductDetails, Long> 
     Page<ProductDetails> findByProductName(@Param("query") String query, Pageable pageable);
 
 
-    @Query("SELECT p FROM ProductDetails p WHERE p.priceDrop IS NOT NULL ORDER BY p.priceDrop ASC")
+    @Query("SELECT p FROM ProductDetails p WHERE p.priceDrop IS NOT NULL ORDER BY p.priceDrop DESC")
     Page<ProductDetails> findProductByPriceDrop(Pageable pageable);
 
 }

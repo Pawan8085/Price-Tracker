@@ -28,4 +28,11 @@ public interface ProductDetailService {
      */
     ApiResponse<ProductDetailsResponse> searchProducts(String key, int page);
 
+    /**
+     *
+     * @param page
+     * @return
+     */
+    ApiResponse<ProductDetailsResponse> getPricedDroppedProduct(int page);
+
 }
