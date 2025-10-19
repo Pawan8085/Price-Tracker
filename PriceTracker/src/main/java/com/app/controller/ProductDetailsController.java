@@ -35,14 +35,6 @@ public class ProductDetailsController {
 
     }
 
-    @GetMapping
-    public  ResponseEntity<ApiResponse<ProductDetailsResponse>> searchProductDetailsByNameHandler(@RequestParam String q, @RequestParam int page){
-
-        ApiResponse<ProductDetailsResponse> response = productDetailService.searchProducts(q, page);
-        return new ResponseEntity<ApiResponse<ProductDetailsResponse>>(response, HttpStatus.OK);
-
-    }
-
 
     @GetMapping("/pricedrop")
     public ResponseEntity<ApiResponse<ProductDetailsResponse>> getPriceDroppedProductHandlder(@RequestParam int page){

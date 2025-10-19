@@ -20,13 +20,6 @@ public interface ProductDetailService {
      */
     ApiResponse<ProductDetailsResponse> findAllProductDetails(int page_no);
 
-    /**
-     *
-     * @param key
-     * @param page
-     * @return
-     */
-    ApiResponse<ProductDetailsResponse> searchProducts(String key, int page);
 
     /**
      *
