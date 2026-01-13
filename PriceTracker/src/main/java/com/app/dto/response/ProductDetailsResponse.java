@@ -11,8 +11,11 @@ import java.time.LocalDateTime;
 @Builder
 public class ProductDetailsResponse {
 
+    private Long productId;
     private String url;
+    private String image;
     private  String product;
+    private Integer previousPrice;
     private Integer currentPrice;
     private Integer minPrice;
     private  Integer maxPrice;

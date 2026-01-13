@@ -9,8 +9,11 @@ public class ProductDetailsTransformer {
     public static ProductDetailsResponse productDetailsToProductDetailsResponse(ProductDetails productDetails){
         // ProductDetails To ProductDetailsResponse
         return  ProductDetailsResponse.builder()
+                .productId(productDetails.getProductId())
+                .image(productDetails.getImage())
                 .url(productDetails.getUrl())
                 .product(productDetails.getProduct())
+                .previousPrice(productDetails.getPreviousPrice())
                 .currentPrice(productDetails.getCurrentPrice())
                 .maxPrice(productDetails.getMaxPrice())
                 .minPrice(productDetails.getMinPrice())
@@ -24,6 +27,8 @@ public class ProductDetailsTransformer {
         return ProductDetails.builder()
                 .product(productDetailsResponse.getProduct())
                 .url(productDetailsResponse.getUrl())
+                .image(productDetailsResponse.getImage())
+                .previousPrice(productDetailsResponse.getPreviousPrice())
                 .currentPrice(productDetailsResponse.getCurrentPrice())
                 .minPrice(productDetailsResponse.getMinPrice())
                 .maxPrice(productDetailsResponse.getMaxPrice())

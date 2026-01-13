@@ -43,8 +43,10 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
         User user = userRepo.findByEmail(username).get();
 
         ProductDetailsResponse productDetailsResponse = getProductDetails(urlReqeust);
-        productDetailsResponse.setMaxPrice(productDetailsResponse.getCurrentPrice());
-        productDetailsResponse.setMinPrice(productDetailsResponse.getCurrentPrice());
+        int currentPrice = productDetailsResponse.getCurrentPrice();
+        productDetailsResponse.setPreviousPrice(currentPrice);
+        productDetailsResponse.setMaxPrice(currentPrice);
+        productDetailsResponse.setMinPrice(currentPrice);
 
         ProductDetails productDetails = ProductDetailsTransformer.productDetailsResponseToProductDetails(productDetailsResponse);
         user.getProductDetails().add(productDetails);
@@ -60,8 +62,15 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
             String url = urlReqeust.getUrl();
 
             Document document = Jsoup.connect(url)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36")
-                    .timeout(10000)
+                    .userAgent(
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                                    "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                                    "Chrome/120.0.0.0 Safari/537.36"
+                    )
+                    .header("Accept-Language", "en-US,en;q=0.9")
+                    .header("Accept-Encoding", "gzip, deflate")
+                    .referrer("https://www.google.com")
+                    .timeout(15000)
                     .get();
 
             Element titleEl = document.selectFirst("#productTitle");
@@ -70,9 +79,10 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
             String price = priceEl != null ? priceEl.text().trim() : null;
 
             Element urlEl = document.selectFirst("#landingImage");
-            String productUrl = null;
+            String image = null;
             if (urlEl != null) {
-                productUrl = urlEl.attr("src").trim();
+                image = urlEl.attr("src").trim();
+
             }
 
             StringBuilder priceStr = new StringBuilder();
@@ -89,6 +99,7 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
            return ProductDetailsResponse.builder()
                     .product(title)
                     .url(url)
+                   .image(image)
                     .currentPrice(productPrice)
                     .build();
 

@@ -22,7 +22,7 @@ public class ProductDetailsController {
 
     @PostMapping("/add")
     public  ResponseEntity<Void> addProductDetailsHandler(@RequestBody UrlReqeust urlReqeust){
-
+        System.out.println("Product added!");
         productDetailService.addProductDetails(urlReqeust);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

@@ -52,12 +52,20 @@ public class NotificationService {
             urlReqeust.setUrl(product.getUrl());
             ProductDetailsResponse productDetail = productDetailService.getProductDetails(urlReqeust);
 
+
+
             if (productDetail != null) {
                 Integer currentPrice = productDetail.getCurrentPrice();
                 Integer prevPrice = product.getCurrentPrice();
                 Integer prevMinPrice = product.getMinPrice();
                 Integer prevMaxPrice = product.getMaxPrice();
 
+                // update previous price
+                if(prevPrice != currentPrice){
+                    product.setPreviousPrice(prevPrice);
+                }
+
+                // update product current price
                 product.setCurrentPrice(currentPrice);
 
                 // send notification if price has dropped

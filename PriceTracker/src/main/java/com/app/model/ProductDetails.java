@@ -16,7 +16,10 @@ public class ProductDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
     private  String product;
+    @Column(length = 1500)
     private  String url;
+    private String image;
+    private Integer previousPrice;
     private Integer currentPrice;
     private Integer minPrice;
     private  Integer maxPrice;

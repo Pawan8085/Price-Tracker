@@ -16,7 +16,7 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    @Async
+
     public  boolean send(String to, String from, String subject, String text) {
 
         boolean sent = false;
