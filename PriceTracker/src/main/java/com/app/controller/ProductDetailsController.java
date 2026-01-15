@@ -27,6 +27,13 @@ public class ProductDetailsController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteProductHandler(@PathVariable Long productId){
+
+        productDetailService.removeProductDetails(productId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/all")
     public  ResponseEntity<ApiResponse<ProductDetailsResponse>> findAllProductsHandler(@RequestParam int page){
 
@@ -43,5 +50,7 @@ public class ProductDetailsController {
         return new ResponseEntity<ApiResponse<ProductDetailsResponse>>(response, HttpStatus.OK);
 
     }
+
+
 
 }

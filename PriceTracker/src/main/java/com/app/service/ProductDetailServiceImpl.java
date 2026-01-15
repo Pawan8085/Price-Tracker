@@ -4,6 +4,8 @@ import com.app.dto.request.UrlReqeust;
 import com.app.dto.response.ApiResponse;
 import com.app.dto.response.PageInfoResponse;
 import com.app.dto.response.ProductDetailsResponse;
+import com.app.exception.ProductException;
+import com.app.exception.UserException;
 import com.app.model.ProductDetails;
 import com.app.model.User;
 import com.app.repository.ProductDetailsRepo;
@@ -40,7 +42,7 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
     public void addProductDetails(UrlReqeust urlReqeust) {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepo.findByEmail(username).get();
+        User user = userRepo.findByEmail(username).orElseThrow(() -> new UserException("User not found!"));
 
         ProductDetailsResponse productDetailsResponse = getProductDetails(urlReqeust);
         int currentPrice = productDetailsResponse.getCurrentPrice();
@@ -52,6 +54,19 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
         user.getProductDetails().add(productDetails);
         userRepo.save(user);
 
+
+    }
+
+    @Override
+    public void removeProductDetails(Long productId) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepo.findByEmail(username).orElseThrow(() -> new UserException("User not found!"));
+
+        int deleted = productDetailsRepo.deleteUserProduct(user.getUserId(), productId);
+        if(deleted == 0){
+            throw  new ProductException("Product not found or not owned by user");
+        }
 
     }
 
@@ -119,7 +134,7 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // create page object
-        Pageable pageable = PageRequest.of(page_no, 10);
+        Pageable pageable = PageRequest.of(page_no, 9);
         Page<ProductDetails> data = userRepo.findProductDetailsByEmail(username, pageable);
 
         ApiResponse<ProductDetailsResponse> response = new ApiResponse<>();
@@ -141,7 +156,7 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
     @Override
     public ApiResponse<ProductDetailsResponse> searchProducts(String key, int page_no) {
         // create page object
-        Pageable pageable = PageRequest.of(page_no, 10);
+        Pageable pageable = PageRequest.of(page_no, 9);
         Page<ProductDetails> data = productDetailsRepo.findByProductName(key, pageable);
 
         ApiResponse<ProductDetailsResponse> response = new ApiResponse<>();
@@ -164,7 +179,7 @@ public class ProductDetailServiceImpl implements  ProductDetailService{
     public ApiResponse<ProductDetailsResponse> getPricedDroppedProduct(int page_no) {
 
         // create page object
-        Pageable pageable = PageRequest.of(page_no, 10);
+        Pageable pageable = PageRequest.of(page_no, 9);
         Page<ProductDetails> data = productDetailsRepo.findProductByPriceDrop(pageable);
 
         ApiResponse<ProductDetailsResponse> response = new ApiResponse<>();

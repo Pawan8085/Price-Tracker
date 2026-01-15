@@ -2,16 +2,22 @@ package com.app.service;
 
 import com.app.dto.request.UrlReqeust;
 import com.app.dto.response.ApiResponse;
-import com.app.dto.response.PageInfoResponse;
 import com.app.dto.response.ProductDetailsResponse;
 import com.app.exception.ProductException;
+import com.app.exception.UserException;
 
 public interface ProductDetailService {
     /**
      *
      * @param urlReqeust
      */
-    void addProductDetails(UrlReqeust urlReqeust)throws ProductException;
+    void addProductDetails(UrlReqeust urlReqeust)throws ProductException, UserException;
+
+    /**
+     *
+     * @param product
+     */
+    void removeProductDetails(Long productId) throws ProductException, UserException;
 
     /**
      *
