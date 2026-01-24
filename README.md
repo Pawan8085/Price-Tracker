@@ -31,7 +31,7 @@ A **secure full-stack Price Tracker application** that allows users to track pro
 
 ### Security
 - JWT Authentication
-- Email OTP Verification
+
 
 ### Scheduling
 - Spring Scheduler for automated price checks
