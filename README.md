@@ -38,8 +38,6 @@ A **secure full-stack Price Tracker application** that allows users to track pro
 
 ---
 
-## 📂 Project Structure
-
 
 
   ## 📂 **Project Structure**
